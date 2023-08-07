@@ -6,12 +6,29 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 // get all products
 router.get('/', (req, res) => {
   // find all products
-  // be sure to include its associated Category and Tag data
+  Product.findAll({
+    include:[ Category, { // be sure to include its associated Category and Tag data
+      model: Tag, 
+      through: ProductTag
+    }
+  ]})
+  .then(results => {
+    res.json(results)
+  })
 });
 
 // get one product
 router.get('/:id', (req, res) => {
   // find a single product by its `id`
+  Product.findByPk(req.params.id, {
+    include: [Category, {
+      model: Tag,
+      Through: ProductTag 
+    }
+  ]})
+    .then(results => {
+      res.json(results)
+    })
   // be sure to include its associated Category and Tag data
 });
 
