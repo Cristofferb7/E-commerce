@@ -3,46 +3,39 @@ const { Tag, Product, ProductTag } = require('../../models');
 
 // The `/api/tags` endpoint
 
-router.get('/', (req, res) => {
-  // find all tags
-  Tag.findAll({
-    include:[ Category, { 
-      model: Product, 
-      through: ProductTag
-    }
-  ]
-})
-.then(tags => {
-  res.json(tags);
-})
-.catch(err => {
-  res.status(500).json(err);
+
+  router.get('/', (req, res) => {
+    // Find all tags
+    Tag.findAll({
+      include: [{ model: Product, through: ProductTag }]
+    })
+      .then(results => {
+        res.json(results);
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      });
 });
-});
+
   // be sure to include its associated Product data
 
 
-router.get('/:id', (req, res) => {
-  // find a single tag by its `id`
   router.get('/:id', (req, res) => {
+    // Find a single tag by its `id`
     Tag.findByPk(req.params.id, {
-      include: [
-        { model: Product, through: ProductTag }
-      ]
+      include: [{ model: Product, through: ProductTag }]
     })
-    .then(tag => {
-      if (!tag) {
-        res.status(404).json({ message: 'Tag not found' });// be sure to include its associated Product data
-      } else {
-        res.json(tag);
-      }
-    })
-    .catch(err => {
-      res.status(500).json(err);
-    });
-  });
-  
-  
+      .then(tag => {
+        if (!tag) {
+          res.status(404).json({ message: 'Tag not found' });
+        } else {
+          res.json(tag);
+        }
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      });
+
 });
 
 router.post('/', (req, res) => {
